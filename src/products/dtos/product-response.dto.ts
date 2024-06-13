@@ -1,5 +1,7 @@
-import { Expose } from 'class-transformer';
-import { Product } from '../product.model';
+import { Category, Product } from '@prisma/client';
+import { Expose, Type } from 'class-transformer';
+
+import { CategoryResponseDto } from 'src/categories/dtos/category-response.dto';
 
 export class ProductResponseDto {
   @Expose()
@@ -9,10 +11,20 @@ export class ProductResponseDto {
   name: string;
 
   @Expose()
+  slug: string;
+
+  @Expose()
   desc: string;
 
   @Expose()
   price: number;
+
+  @Expose()
+  image: string;
+
+  @Expose()
+  @Type(() => CategoryResponseDto)
+  categories: Category[];
 
   constructor(product: Partial<Product>) {
     Object.assign(this, product);
