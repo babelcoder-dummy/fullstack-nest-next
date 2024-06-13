@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -18,6 +19,9 @@ export class CreateProductDto {
   @IsNumber()
   price: number;
 
+  @Transform(({ value }) => {
+    return (value as number[]).map((i) => +i);
+  })
   @IsArray()
   @IsNumber({}, { each: true })
   @ArrayMinSize(1)

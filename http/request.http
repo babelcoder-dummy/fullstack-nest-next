@@ -30,3 +30,35 @@ GET {{$dotenv host}}/products/1
 DELETE  {{$dotenv host}}/products/1
 
 ###
+
+POST {{$dotenv host}}/categories
+Content-Type: application/json
+
+{
+  "name": "Category 1",
+  "desc": "Category 1 Desc"
+}
+
+###
+
+PATCH  {{$dotenv host}}/categories/1
+Content-Type: application/json
+
+{
+  "name": "Category-1",
+  "desc": "Category 1 Desc"
+}
+
+###
+
+GET {{$dotenv host}}/categories
+
+###
+
+GET {{$dotenv host}}/categories/1
+
+###
+
+DELETE  {{$dotenv host}}/categories/1
+
+###
