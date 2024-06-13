@@ -16,6 +16,7 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { FindAllQueryDto } from './dtos/find-all-query.dto';
 import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { ProductResponseDto } from './dtos/product-response.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -23,13 +24,17 @@ export class ProductsController {
 
   @Get()
   findAll(@Query() query: FindAllQueryDto) {
-    return this.productsService.findAll(query);
+    const products = this.productsService.findAll(query);
+
+    return products.map((p) => new ProductResponseDto(p));
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     try {
-      return this.productsService.findById(id);
+      const product = this.productsService.findById(id);
+
+      return new ProductResponseDto(product);
     } catch {
       throw new NotFoundException();
     }
@@ -38,7 +43,8 @@ export class ProductsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() form: CreateProductDto) {
-    return this.productsService.create(form);
+    const product = this.productsService.create(form);
+    return new ProductResponseDto(product);
   }
 
   @Patch(':id')
@@ -47,7 +53,8 @@ export class ProductsController {
     @Body() form: UpdateProductDto,
   ) {
     try {
-      return this.productsService.update(id, form);
+      const product = this.productsService.update(id, form);
+      return new ProductResponseDto(product);
     } catch {
       throw new NotFoundException();
     }

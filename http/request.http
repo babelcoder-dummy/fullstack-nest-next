@@ -1,5 +1,4 @@
 POST {{$dotenv host}}/products
-Authorization: Bearer {{$dotenv accessToken}}
 Content-Type: application/json
 
 {
