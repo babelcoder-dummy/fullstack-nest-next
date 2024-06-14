@@ -1,4 +1,6 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -8,7 +10,17 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ProductsModule, CoreModule, UsersModule, CategoriesModule],
+  imports: [
+    ServeStaticModule.forRoot({
+      serveRoot: '/uploads',
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
+    ConfigModule.forRoot(),
+    ProductsModule,
+    CoreModule,
+    UsersModule,
+    CategoriesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

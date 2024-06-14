@@ -11,8 +11,8 @@ import {
   Post,
   Query,
   UnprocessableEntityException,
+  UploadedFile,
 } from '@nestjs/common';
-import { faker } from '@faker-js/faker';
 
 import { CreateProductDto } from './dtos/create-product.dto';
 import { FindAllQueryDto } from './dtos/find-all-query.dto';
@@ -22,6 +22,7 @@ import { ProductsService } from './products.service';
 import { RecordNotFoundError } from 'src/core/errors/record-not-found.error';
 import { UniqueConstraintError } from 'src/core/errors/unique-constraint.error';
 import { ProductListResponseDto } from './dtos/product-list-response.dto';
+import { UploadFileInterceptor } from 'src/core/interceptors/upload-file.interceptor';
 
 @Controller('products')
 export class ProductsController {
@@ -47,13 +48,14 @@ export class ProductsController {
   }
 
   @Post()
+  @UploadFileInterceptor('image', { destination: 'uploads/products' })
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() form: CreateProductDto) {
+  async create(
+    @Body() form: CreateProductDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     try {
-      const product = await this.productsService.create(
-        form,
-        faker.image.url(),
-      );
+      const product = await this.productsService.create(form, file.filename);
 
       return new ProductResponseDto(product);
     } catch (e) {
@@ -64,12 +66,17 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() form: UpdateProductDto) {
+  @UploadFileInterceptor('image', { destination: 'uploads/products' })
+  async update(
+    @Param('id') id: number,
+    @Body() form: UpdateProductDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     try {
       const product = await this.productsService.update(
         id,
         form,
-        faker.image.url(),
+        file.filename,
       );
 
       return new ProductResponseDto(product);

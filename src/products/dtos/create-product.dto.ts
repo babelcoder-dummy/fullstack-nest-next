@@ -17,6 +17,7 @@ export class CreateProductDto {
   desc: string;
 
   @IsNumber()
+  @Transform(({ value }) => +value)
   price: number;
 
   @Transform(({ value }) => {

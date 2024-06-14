@@ -1,3 +1,5 @@
+import { rm } from 'fs/promises';
+
 import { Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { omit } from 'lodash';
@@ -47,6 +49,7 @@ export class ProductsService {
       },
       skip: (page - 1) * limit,
       take: limit,
+      orderBy: { createdAt: 'desc' },
     });
 
     return {
@@ -80,6 +83,9 @@ export class ProductsService {
 
   async update(productId: number, form: UpdateProductDto, filepath?: string) {
     try {
+      console.log(productId, form, filepath);
+      await this.removeImage(productId);
+
       return await this.prisma.product.update({
         where: { id: productId },
         data: {
@@ -92,6 +98,7 @@ export class ProductsService {
         },
       });
     } catch (e) {
+      console.log(e);
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
         throw new RecordNotFoundError();
       }
@@ -106,5 +113,11 @@ export class ProductsService {
         throw new RecordNotFoundError();
       }
     }
+  }
+
+  private async removeImage(productId: number) {
+    const existingProduct = await this.findById(productId);
+
+    if (existingProduct.image) await rm(existingProduct.image, { force: true });
   }
 }
