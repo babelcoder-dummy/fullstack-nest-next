@@ -23,6 +23,8 @@ import { RecordNotFoundError } from 'src/core/errors/record-not-found.error';
 import { UniqueConstraintError } from 'src/core/errors/unique-constraint.error';
 import { ProductListResponseDto } from './dtos/product-list-response.dto';
 import { UploadFileInterceptor } from 'src/core/interceptors/upload-file.interceptor';
+import { Role } from 'src/users/role.model';
+import { Auth } from 'src/auth/guards/auth.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -48,6 +50,7 @@ export class ProductsController {
   }
 
   @Post()
+  @Auth(Role.Admin, Role.Manager)
   @UploadFileInterceptor('image', { destination: 'uploads/products' })
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -66,6 +69,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @Auth(Role.Admin, Role.Manager)
   @UploadFileInterceptor('image', { destination: 'uploads/products' })
   async update(
     @Param('id') id: number,
@@ -88,6 +92,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Auth(Role.Admin, Role.Manager)
   @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(@Param('id') id: number) {
     try {

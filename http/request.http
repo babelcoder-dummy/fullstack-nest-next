@@ -176,3 +176,32 @@ GET {{$dotenv host}}/categories/1
 DELETE  {{$dotenv host}}/categories/1
 
 ###
+
+POST {{$dotenv host}}/orders
+Content-Type: application/json
+Authorization: Bearer {{$dotenv accessToken}}
+
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "price": 100
+    },
+    {
+      "productId": 2,
+      "quantity": 3,
+      "price": 1000
+    }
+  ]
+}
+
+###
+
+GET {{$dotenv host}}/orders
+Authorization: Bearer {{$dotenv accessToken}}
+
+###
+
+GET {{$dotenv host}}/orders/1
+Authorization: Bearer {{$dotenv accessToken}}
