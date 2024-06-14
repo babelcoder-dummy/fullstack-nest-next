@@ -1,3 +1,84 @@
+POST {{$dotenv host}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin",
+  "email": "admin@babelcoder.com",
+  "password": "password"
+}
+
+###
+
+POST {{$dotenv host}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@babelcoder.com",
+  "password": "password"
+}
+
+###
+
+POST {{$dotenv host}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{$dotenv refreshToken}}"
+}
+
+###
+
+GET {{$dotenv host}}/auth/profile
+Authorization: Bearer {{$dotenv accessToken}}
+
+###
+
+PATCH {{$dotenv host}}/auth/profile
+Authorization: Bearer {{$dotenv accessToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Admin
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="address[houseNumber]"
+
+111/11
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="address[village]"
+
+Xx
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="address[road]"
+
+Petchaburi
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="address[district]"
+
+Ratchatawee
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="address[province]"
+
+Mukkasun
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="address[postalCode]"
+
+10250
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="avatar.png"
+Content-Type: image/png
+
+< ./http/data/avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+DELETE {{$dotenv host}}/auth/logout
+Authorization: Bearer {{$dotenv accessToken}}
+
+###
+
 POST {{$dotenv host}}/products
 Authorization: Bearer {{$dotenv accessToken}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
