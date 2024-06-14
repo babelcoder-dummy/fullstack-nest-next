@@ -1,0 +1,9 @@
+Dockerfile
+.dockerignore
+node_modules
+README.md
+dist
+.git
+test
+mssql
+data

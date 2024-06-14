@@ -1,8 +1,19 @@
 services:
+  api:
+    image: api
+    ports:
+      - 9191:9191
+    env_file:
+      - .env.production
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: 'mcr.microsoft.com/mssql/server:2022-latest'
     ports:
       - 1433:1433
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "7la5_qX13iCm" -Q "SELECT 1" -b -o /dev/null
     environment:
       ACCEPT_EULA: 'Y'
       MSSQL_SA_PASSWORD: '7la5_qX13iCm'
