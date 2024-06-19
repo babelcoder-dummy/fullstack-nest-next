@@ -11,6 +11,7 @@ import { UniqueConstraintError } from 'src/core/errors/unique-constraint.error';
 import { PrismaService } from 'src/core/services/prisma.service';
 import { slugify } from 'src/core/utils/slugify';
 import { FindAllQueryDto } from './dtos/find-all-query.dto';
+import { join } from 'path';
 
 @Injectable()
 export class ProductsService {
@@ -118,6 +119,15 @@ export class ProductsService {
   private async removeImage(productId: number) {
     const existingProduct = await this.findById(productId);
 
-    if (existingProduct.image) await rm(existingProduct.image, { force: true });
+    if (existingProduct.image) {
+      const imagePath = join(
+        __dirname,
+        `../../uploads/products/${existingProduct.image}`,
+      );
+
+      await rm(imagePath, {
+        force: true,
+      });
+    }
   }
 }
