@@ -8,4 +8,4 @@ RUN npx prisma generate && pnpm build
 FROM node:22.3.0-alpine3.19
 COPY --from=builder /app/node_modules ./app/node_modules
 COPY --from=builder /app/dist ./app/dist
-CMD [ "node", "dist/src/main.js" ]
+CMD [ "node", "/app/dist/src/main.js" ]
