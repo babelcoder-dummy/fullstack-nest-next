@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   UnprocessableEntityException,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { CategoriesService } from './categories.service';
@@ -20,10 +21,16 @@ import { RecordNotFoundError } from 'src/core/errors/record-not-found.error';
 import { UniqueConstraintError } from 'src/core/errors/unique-constraint.error';
 import { Auth } from 'src/auth/guards/auth.guard';
 import { Role } from 'src/users/role.model';
+import { CacheService } from 'src/core/services/cache.service';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('categories')
+@UseInterceptors(CacheInterceptor)
 export class CategoriesController {
-  constructor(private categoriesService: CategoriesService) {}
+  constructor(
+    private categoriesService: CategoriesService,
+    private cacheService: CacheService,
+  ) {}
 
   @Get()
   async findAll() {
@@ -48,6 +55,8 @@ export class CategoriesController {
     try {
       const category = await this.categoriesService.create(form);
 
+      this.cacheService.del('/categories');
+
       return new CategoryResponseDto(category);
     } catch (e) {
       if (e instanceof UniqueConstraintError) {
@@ -62,6 +71,9 @@ export class CategoriesController {
     try {
       const category = await this.categoriesService.update(id, form);
 
+      this.cacheService.del('/categories');
+      this.cacheService.del(`/categories/${id}`);
+
       return new CategoryResponseDto(category);
     } catch (e) {
       if (e instanceof RecordNotFoundError) {
@@ -75,7 +87,10 @@ export class CategoriesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(@Param('id') id: number) {
     try {
-      return await this.categoriesService.destroy(id);
+      await this.categoriesService.destroy(id);
+
+      this.cacheService.del('/categories');
+      this.cacheService.del(`/categories/${id}`);
     } catch (e) {
       if (e instanceof RecordNotFoundError) {
         throw new NotFoundException();
