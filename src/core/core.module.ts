@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import type { RedisClientOptions } from 'redis';
@@ -24,7 +24,7 @@ import { CacheService } from './services/cache.service';
       },
     }),
   ],
-  providers: [PrismaService, CacheService],
-  exports: [PrismaService, CacheService],
+  providers: [PrismaService, CacheService, Logger],
+  exports: [PrismaService, CacheService, Logger],
 })
 export class CoreModule {}

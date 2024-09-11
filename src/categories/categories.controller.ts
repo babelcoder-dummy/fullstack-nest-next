@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -30,10 +31,12 @@ export class CategoriesController {
   constructor(
     private categoriesService: CategoriesService,
     private cacheService: CacheService,
+    private readonly logger: Logger,
   ) {}
 
   @Get()
   async findAll() {
+    this.logger.debug('Calling findAll()', CategoriesController.name);
     const categories = await this.categoriesService.findAll();
 
     return categories.map((c) => new CategoryResponseDto(c));
