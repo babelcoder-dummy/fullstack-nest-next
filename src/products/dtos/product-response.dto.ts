@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Category, Product } from '@prisma/client';
 import { Expose, Type } from 'class-transformer';
 
@@ -24,6 +25,7 @@ export class ProductResponseDto {
 
   @Expose()
   @Type(() => CategoryResponseDto)
+  @ApiProperty({ type: [CategoryResponseDto] })
   categories: Category[];
 
   constructor(product: Partial<Product>) {

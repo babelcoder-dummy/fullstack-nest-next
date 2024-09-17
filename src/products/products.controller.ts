@@ -25,6 +25,7 @@ import { ProductListResponseDto } from './dtos/product-list-response.dto';
 import { UploadFileInterceptor } from 'src/core/interceptors/upload-file.interceptor';
 import { Role } from 'src/users/role.model';
 import { Auth } from 'src/auth/guards/auth.guard';
+import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
@@ -53,6 +54,23 @@ export class ProductsController {
   @Auth(Role.Admin, Role.Manager)
   @UploadFileInterceptor('image', { destination: 'uploads/products' })
   @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        desc: { type: 'string' },
+        price: { type: 'number' },
+        categoryIds: { type: 'array', items: { type: 'number' } },
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   async create(
     @Body() form: CreateProductDto,
     @UploadedFile() file: Express.Multer.File,
@@ -71,6 +89,7 @@ export class ProductsController {
   @Patch(':id')
   @Auth(Role.Admin, Role.Manager)
   @UploadFileInterceptor('image', { destination: 'uploads/products' })
+  @ApiBearerAuth()
   async update(
     @Param('id') id: number,
     @Body() form: UpdateProductDto,
@@ -94,6 +113,7 @@ export class ProductsController {
   @Delete(':id')
   @Auth(Role.Admin, Role.Manager)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
   async destroy(@Param('id') id: number) {
     try {
       return await this.productsService.destroy(id);

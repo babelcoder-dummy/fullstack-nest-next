@@ -21,7 +21,8 @@ export class CreateProductDto {
   price: number;
 
   @Transform(({ value }) => {
-    return (value as number[]).map((i) => +i);
+    const ids = Array.isArray(value) ? value : (value as string).split(',');
+    return ids.map((i) => +i);
   })
   @IsArray()
   @IsNumber({}, { each: true })

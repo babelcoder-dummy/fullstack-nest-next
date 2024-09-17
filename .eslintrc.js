@@ -30,6 +30,6 @@ module.exports = {
       {
         endOfLine: 'auto',
       },
-    ]
+    ],
   },
 };
